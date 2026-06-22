@@ -1,24 +1,17 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
-
-// Middleware
-app.use(cors());
+app.use(helmet());
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api', require('./routes'));
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/resume', require('./routes/resume.routes'));
+app.use('/api/interview', require('./routes/interview.routes'));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error',
-    status: err.status || 500,
-  });
-});
-
+app.use(require('./middleware/errorHandler'));
 module.exports = app;
