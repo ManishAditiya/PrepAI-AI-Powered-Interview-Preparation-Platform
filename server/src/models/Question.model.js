@@ -9,6 +9,8 @@ const questionSchema = new mongoose.Schema({
   userAnswer:   { type: String },
   aiFeedback:   { type: String },
   score:        { type: Number },
+  strengths:    { type: [String] },
+  improvements: { type: [String] },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Question', questionSchema);
