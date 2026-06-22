@@ -1,0 +1,22 @@
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const s3 = require('../config/s3');
+const path = require('path');
+
+const upload = multer({
+  storage: multerS3({
+    s3,
+    bucket: process.env.S3_BUCKET_NAME,
+    key: (req, file, cb) => {
+      const uniqueName = `resumes/${req.user.id}-${Date.now()}${path.extname(file.originalname)}`;
+      cb(null, uniqueName);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },  // 5MB max
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') cb(null, true);
+    else cb(new Error('Only PDF files are allowed'));
+  },
+});
+
+module.exports = upload;
