@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -15,14 +15,15 @@ import InterviewPage from './pages/InterviewPage';
 import FeedbackPage from './pages/FeedbackPage';
 import ProfilePage from './pages/ProfilePage';
 
-function App() {
+function AppContent() {
   const { isAuthenticated } = useAuthStore();
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/';
 
   return (
-    <Router>
-      <div className='min-h-screen bg-gray-50'>
-        <Navbar />
-        <main>
+    <div className={isLandingPage ? 'min-h-screen' : 'min-h-screen bg-gray-50'}>
+      {!isLandingPage && <Navbar />}
+      <main>
           <Routes>
             {/* Public Routes */}
             <Route
@@ -96,6 +97,13 @@ function App() {
         {/* Toast notifications */}
         <Toaster position='top-right' />
       </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
